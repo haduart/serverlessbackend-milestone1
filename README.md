@@ -131,7 +131,7 @@ $ cd serverlessbackend
 Creating virtual environment
 ```commandline
 $ python3 -m venv .chalice/venv37
-$ ./chalice/venv32/bin/activate
+$ source .chalice/venv37/bin/activate
 ```
 Installing packages
 ```commandline
