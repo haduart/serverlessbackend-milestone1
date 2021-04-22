@@ -74,7 +74,49 @@
    new_user_video = hexmail + str_count + '.mp4'
        users_video_dictionary[mail].append(new_user_video) 
    ```
+9. Validate your work. We will provide you a simple HTML/JS that will let you record a video and send it to S3 using the presigned URL.
+   * The important JavaScript part for using the presigned url is as follows:
+   ```javascript
+   fetch('https://########.execute-api.eu-west-1.amazonaws.com' +
+                   '/api/presignedurl/' + project + '/' + step + '/' + '?mail=' + mail)
+                   .then(
+                       function (response) {
+                           if (response.status !== 200) {
+                               console.log('Looks like there was a problem. Status Code: ' +
+                                   response.status);
+                               return;
+                           }
    
+                           response.json().then(function (data) {
+                               console.log(data);
+                               let presigned = data;
+                               const formData = new FormData();
+                               formData.append("acl", presigned.fields['acl']);
+                               formData.append("key", presigned.fields['key']);
+                               formData.append("AWSAccessKeyId", presigned.fields['AWSAccessKeyId']);
+                               formData.append("x-amz-security-token", presigned.fields['x-amz-security-token']);
+                               formData.append("policy", presigned.fields['policy']);
+                               formData.append("signature", presigned.fields['signature']);
+                               formData.append("file", recordedBlob);
+   
+                               console.log("POSTING! " + presigned.url)
+   
+                               fetch(presigned.url, {
+                                   method: "POST",
+                                   body: formData
+                               }).then(function (secondresponse) {
+                                       window.location = nextURL
+                                       console.log('Everything worked!: ' + secondresponse.status);
+                                   }
+                               );
+                           });
+                       }
+                   )
+                   .catch(function (err) {
+                       console.log('Fetch Error :-S', err);
+                   });
+   ```
+   We are concatenating two calls, the first one for fetching the credentials from the presigned url and with those credentials we are uploading the file. 
 
 **Mileston 1: Submit Your Work**
 
@@ -293,6 +335,7 @@ $ curl -X POST  -F "acl=public-read" \
      -F "signature=##########GYiE2mTgM=" \
      -F "file=@intro.mp4" https://s3.eu-west-1.amazonaws.com/videos.serverless.com
 ```
+
 ***7. Add security and authentication***
 
 Installing AWS Boto3
