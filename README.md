@@ -3,11 +3,24 @@
 **Objective**
 
 * Using AWS Chalice, we will generate and send to the client a pre-signed URL that can be used to upload a file directly to S3. An S3 bucket and folder structure will be created for uploaded files. It is essential to protect the privacy of our users and data, so we will test security and authentication methods. 
-  
 
-**Workflow**
+**Considerations before starting**
 
-1. Setup and configure AWS CL  
+Before starting this project consider veryfying that all necessary servies are available in your region. 
+![Alt text](docs/images/regions.png?raw=true "All regions in AWS")
+One way of knowing if those services are available is checking the FAQ:
+* [ElasticTranscoder FAQ](https://aws.amazon.com/en/elastictranscoder/faqs/)
+You can also refer to the [AWS Global Infraestructure Regional Table](https://aws.amazon.com/en/about-aws/global-infrastructure/regional-product-services/)  
+
+The services that your region has to support are and that are more infrequent or experimental are:
+* AWS Elastic Transcoder
+* Amazon Comprehend
+* AWS Transcribe
+   
+
+**Workflow** 
+
+1. Setup and configure AWS CLI  
 2. Install and setup AWS Chalice    
 3. Create first project with Chalice
     * Create a python virtual environment
@@ -448,6 +461,17 @@ $ curl --user "test":"test"  https://####.execute-api.eu-west-1.amazonaws.com/ap
 * Experience creating a project in AWS Chalice
 * Hands-on experience with different authentication and security methods in AWS Chalice
 
+**Clean up**
+To delete the Chalice project just run the delecte command form the Chalice CLI.
+```commandline
+ $ chalice delete
+```
+This command will remove AWS Gateways and AWS Lambdas that have been created due to Chalice.
+To delete the cloudformation stack use the following command from the AWS CLI:
+```commandline
+$ aws cloudformation delete-stack --stack-name dynamodb-oico
+```
+A part from all of this, if you've created any other AWS resource manually you have to also manually remove it (S3, Transcode, Transcribe, Comprehend)
 
 **Resources**
 * [AWS Chalice Quickstart](https://aws.github.io/chalice/quickstart.html)
